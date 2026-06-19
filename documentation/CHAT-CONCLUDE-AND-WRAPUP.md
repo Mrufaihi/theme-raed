@@ -10,7 +10,7 @@
 
 **Themed example (preview session 2026-05-10 — editor URL, patch, fresh cache):** [SALLA-PREVIEW-SESSION-2026-05-10-CONCLUDE.md](./SALLA-PREVIEW-SESSION-2026-05-10-CONCLUDE.md)
 
-**Themed example (Twig Phase E reverted, preview not fixed by Twig):** [TWIG-PREVIEW-PHASE-E-CONCLUDE.md](./TWIG-PREVIEW-PHASE-E-CONCLUDE.md) — what we tried, reverted, CSP/Posthog noise, `pnpm run` vs `pnpm exec`, Twig parked until further notice.
+**Themed example (Theme Raed connect + hosted sync blocked):** [SALLA-THEME-RAED-CONNECT-CONCLUDE-2026-06-19.md](./SALLA-THEME-RAED-CONNECT-CONCLUDE-2026-06-19.md) — local preview OK; push ≠ CDN; Tag 1.343.11 blocker; next = fix sync for hosted demo store.
 
 ---
 
