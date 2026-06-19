@@ -1,0 +1,47 @@
+---
+alwaysApply: true
+---
+
+# Salla documentation links
+
+Official Salla Partners / developer references.
+
+## Hub
+
+- [Salla Partners / Developer documentation](https://docs.salla.dev/)
+
+## Partners & merchant
+
+- [Salla Partners Portal](https://salla.partners/)
+- [Help center — تخصيص عناصر الصفحة الرئيسية (homepage elements)](https://help.salla.sa/article/%D8%AA%D8%AE%D8%B5%D9%8A%D8%B5-%D8%B9%D9%86%D8%A7%D8%B5%D8%B1-%D8%A7%D9%84%D8%B5%D9%81%D8%AD%D8%A9-%D8%A7%D9%84%D8%B1%D8%A6%D9%8A%D8%B3%D9%8A%D8%A9-%D8%B9%D9%86%D8%A7%D8%B5%D8%B1-%D8%A5%D8%B6%D8%A7%D9%81%D9%8A%D8%A9/ks5t6jud09qm5yxzlz2escg8)
+
+## Official docs — CLI & auth
+
+| Topic | URL |
+| --- | --- |
+| Salla CLI welcome / prerequisites | https://docs.salla.dev/429774m0 |
+| Authorization (`salla login`) | https://docs.salla.dev/422762m0 |
+| Theme commands overview (login, GitHub PAT, theme commands) | https://docs.salla.dev/422774m0 |
+| **Theme Preview** (`--store`, `--with-editor`, `ETIMEDOUT`, commit prompt) | https://docs.salla.dev/422776m0 |
+| **Troubleshooting** (CLI failure, preview assets, 404, theme ID, websocket) | https://docs.salla.dev/422765m0 |
+
+## Official docs — themes & Twilight
+
+| Topic | URL |
+| --- | --- |
+| Develop a theme | https://docs.salla.dev/421878m0 |
+| Setup a theme (Partners “Preview Theme”, demo stores) | https://docs.salla.dev/421879m0 |
+| Directory structure | https://docs.salla.dev/doc-421918 |
+| **Twilight.json** (settings, features, components) | https://docs.salla.dev/421921m0 |
+| Twilight docs (nav deep link) | https://docs.salla.dev/?nav=01HNFTD5Y5ESFQS3P9MJ0721VM |
+| Publishing guide (`salla theme publish`) | https://docs.salla.dev/doc-422968 |
+
+## npm
+
+- [@salla.sa/cli on npm](https://www.npmjs.com/package/@salla.sa/cli)
+
+## GitHub (SallaApp)
+
+- [Theme Raed (reference theme)](https://github.com/SallaApp/theme-raed)
+- [Salla-CLI issues](https://github.com/SallaApp/Salla-CLI/issues)
+- [Salla-CLI issue #96](https://github.com/SallaApp/Salla-CLI/issues/96)

@@ -1,0 +1,13 @@
+---
+alwaysApply: true
+---
+
+# Salla Twilight — reference screenshots
+
+## Repo structure
+
+![Salla theme repo structure — src/views, locales, twilight.json](../src/assets/debuging-images/repo-structure.png)
+
+## Twig / product page syntax
+
+![Product single.twig — Twig, Salla components (salla-button, etc.)](../src/assets/debuging-images/code-syntax.png)
