@@ -193,8 +193,33 @@ Reference in Twig:
 | **Console noise** | Permissions-Policy, `cdn.translations.salla.network` 500, `Failed to parse mobile headers` — Salla platform; safe to ignore for theme dev. |
 | **CLI `Tag already exists`** | Salla CLI sync issue — retry preview or bump theme version; see [SALLA-THEME-RAED-CONNECT-CONCLUDE §15](./SALLA-THEME-RAED-CONNECT-CONCLUDE-2026-06-19.md). |
 | **i18n** | Replace hardcoded Arabic with `trans()` + locale files (Phase 2). |
+| **Layout / image placement** | Hero, comparison, and section spacing visually buggy — see [§4.4c](#44c-known-layout-bugs-deferred--do-not-fix-in-phase-1). |
 
 **Verify after rename:** DevTools → Network → filter `jawliner` → image URLs should be **200** from `localhost:<port>/images/jawliner/...`.
+
+### 4.4c Known layout bugs (deferred — do not fix in Phase 1)
+
+**Status (2026-06-19):** sections render and assets load after the filename fix, but the static home is **visually rough / buggy**. Acceptable for proving the Twig + preview pipeline; **not** acceptable for go-live.
+
+**Symptoms observed in Chrome hybrid preview:**
+
+| Area | Issue |
+| ---- | ----- |
+| **Hero** | Banner image placement wrong — oversized, overlapping text/CTA, not matching old `index.html` composition. Likely `lg:absolute` / container height without a proper positioned parent. |
+| **Comparison** | Before/after slider floats in wrong place (e.g. over hero/forehead in screenshot) — images use `object-contain` + `clip-path` inside a `min-h-[37vh]` box that may not match image aspect ratio. |
+| **General** | Images “all over the place” — spacing, alignment, and section rhythm not ported faithfully from the prototype. |
+| **Containers** | Suspected **Raed `container` / Salla shell** vs old page full-bleed layout — Jawliner partials dropped into Theme Raed without layout isolation or section-specific wrappers. |
+
+**Likely causes (for later investigation):**
+
+1. Minimal port — Tailwind classes copied without old page’s positioning context (`relative` parents, hero structure, zigzag grid).
+2. No Jawliner-specific layout SCSS yet — only brand colors + FAQ/marquee in `jawliner.scss`.
+3. Stock `master.twig` / main content area constraints vs old standalone HTML page.
+4. Comparison slider still uses inline `clip-path` from prototype — known fragile in old repo too (`Jawliner(old)/docs/ISSUE-SEE-DIFFERENCE-IMAGE-SIZING.md`).
+
+**Deferred to:** layout polish pass (after Phase 1 static home is stable) — likely **M7/M8 polish** or a dedicated **“Jawliner layout QA”** ticket before M10 go-live. Do **not** block Phase 2 config work on pixel-perfect layout.
+
+**Header:** intentionally **unchanged** (stock Salla `header.twig`) — separate from body layout bugs above.
 
 ### 4.5 Fonts
 
