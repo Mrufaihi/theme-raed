@@ -228,3 +228,8 @@ salla-user-menu{
     @apply z-10;
   }
 }
+
+/* PREVIEW SMOKE TEST — verify hosted theme after push (magenta header) */
+.main-nav-container .inner {
+  background-color: #ff00ff !important;
+}
