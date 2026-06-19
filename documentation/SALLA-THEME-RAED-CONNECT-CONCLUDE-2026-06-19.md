@@ -500,3 +500,32 @@ Local development works fully via terminal hybrid preview in Chrome. Merchant in
 ---
 
 *Last updated: 2026-06-19 night — BROWSER was the culprit (Arc vs Chrome). Local dev unblocked; merchant install deferred to go-live.*
+
+---
+
+## 16. Publication + CDN status (2026-06-19 late)
+
+| Step | Status |
+|------|--------|
+| `git push` → GitHub | ✓ `8284296` on `master` |
+| TwilightCI **Twilight CDN** job | ✓ Uploaded tag **`1.344.0`** |
+| Release tag | ✓ [github.com/Mrufaihi/theme-raed/releases/tag/1.344.0](https://github.com/Mrufaihi/theme-raed/releases/tag/1.344.0) |
+| Salla **publication request** | ⏳ **Under review** — theme **read-only** in Partners until approved or withdrawn |
+| Marketplace live for merchants | ✗ Not yet — waits on Salla approval + email |
+
+### What this means (two separate things)
+
+1. **CDN upload (done)** — Salla built and hosted your bundle at `cdn.assets.salla.network/themes/1507984290/1.344.0/…`. **Site/demo preview in Chrome** (after push) should now load **your** theme ID, not stock `1247874246`. Verify: DevTools → `app.css` URL contains `1507984290/1.344.0`.
+
+2. **Publication review (pending)** — You asked Salla to **publish** the theme (marketplace / merchant install path). That is **not** the same as CDN sync. While under review, Partners theme is **read-only** — withdraw the request if you need to edit and re-submit.
+
+### Dev workflow now
+
+| Goal | What to do |
+|------|------------|
+| Fast local iteration | `salla theme preview` + **Chrome** (no push) — unchanged |
+| Hosted demo after edits | Push → wait for TwilightCI CDN → preview in Chrome |
+| Change theme while in review | **Withdraw** publication request in Partners, then push again |
+| jawlinerksa.com live | After Salla approves publication → merchant install |
+
+*Last updated: 2026-06-19 — Pipe B unblocked via TwilightCI CDN `1.344.0`; publication under Salla review.*

@@ -1,6 +1,6 @@
 # Jawliner → Twilight (Twig) migration
 
-**Status:** Phase 1 (static) — planning documented, implementation not started  
+**Status:** Phase 1 (static) — implemented; asset filename fix applied 2026-06-19  
 **Active scope:** Hardcoded static home through all sections (todos 1–5). **Phase 2+ deferred** — see §6b.
 **Indexed from:** [THEME-DOCS-INDEX(main).md](./THEME-DOCS-INDEX(main).md)  
 **Related:** [TWILIGHT-MIGRATION-EXECUTION-PLAN.md](./TWILIGHT-MIGRATION-EXECUTION-PLAN.md) · [TWILIGHT-MIGRATION-REQUIREMENTS.md](./TWILIGHT-MIGRATION-REQUIREMENTS.md) · [SALLA-THEME-RAED-CONNECT-CONCLUDE-2026-06-19.md](./SALLA-THEME-RAED-CONNECT-CONCLUDE-2026-06-19.md)
@@ -150,15 +150,51 @@ Use `BasePage` / `app.all()` patterns already in the theme — do not add a seco
 
 ### 4.4 Assets
 
-Move from `Jawliner(old)/assets/` → `src/assets/images/` (or `src/assets/` per Raed convention).
+Move from `Jawliner(old)/assets/` → `src/assets/images/jawliner/` (webpack **CopyPlugin** → `public/images/jawliner/`).
 
 Reference in Twig:
 
 ```twig
-<img src="{{ 'images/Logos/JawlinerLogo-White.svg' | asset }}" alt="JAWLINER">
+<img src="{{ 'images/jawliner/hero-banner.png' | asset }}" alt="JAWLINER">
 ```
 
-**Large MP4s:** caused preview timeouts before ([SALLA-PREVIEW-TIMEOUT-AND-ASSETS-CONCLUDE.md](./SALLA-PREVIEW-TIMEOUT-AND-ASSETS-CONCLUDE.md)). Lazy-load; avoid committing huge binaries to `public/`.
+**How Salla serves them (not server-side processing):**
+
+| Mode | What happens |
+| ---- | -------------- |
+| **Hybrid preview** (`?assets_url=http://localhost:8000`) | Twig outputs a URL pointing at your local **theme serve** — same pipe as `app.css` / `app.js`. |
+| **CDN / live store** | After `theme publish`, assets ship in the theme bundle on `cdn.assets.salla.network`. |
+
+**Filename rule (required):** use **kebab-case, no spaces** in paths under `images/jawliner/`. The local asset server returns **404** for spaced names (e.g. `jawliner gum mint.webp`). Renamed 2026-06-19 — see [§4.4b](#44b-asset-fixes--deferred).
+
+**Large MP4s:** caused preview timeouts before ([SALLA-PREVIEW-TIMEOUT-AND-ASSETS-CONCLUDE.md](./SALLA-PREVIEW-TIMEOUT-AND-ASSETS-CONCLUDE.md)). Keep testimonial clips small for dev; production strategy in §4.4b.
+
+### 4.4b Asset fixes & deferred
+
+**Fixed (2026-06-19):** renamed all Jawliner assets with spaces → kebab-case; updated Twig `| asset` paths. Symptom: logo bar (clean SVG paths) loaded; hero/product/comparison did not.
+
+| Old name | New name |
+| -------- | -------- |
+| `JAWLINER BANNER MAIN BG REMOVE cropped 3 (4).png` | `hero-banner.png` |
+| `jawliner gum mint.webp` | `jawliner-gum-mint.webp` |
+| `24 PX.svg` | `sar-24px.svg` |
+| `lame ah jaw 1920 final 1.png` | `jaw-before.png` |
+| `x8 last jaw 1920 px 4.png` | `jaw-after.png` |
+| `Chewing_Gum_Normal 1.png` | `chewing-gum.png` |
+| `tiktok 2.mp4` / `tiktok 4.mp4` | `tiktok-2.mp4` / `tiktok-4.mp4` |
+
+**Deferred (later ticket / Phase 2):**
+
+| Task | Why later |
+| ---- | --------- |
+| **Video production strategy** | `tiktok-*.mp4` are 7–26MB each; compress, host on Salla CDN or external URL before go-live; avoid bloating `public/` on every preview sync. |
+| **Header store logo** | Broken image beside “JAWLINER” in stock `header.twig` = merchant logo in Salla dashboard — not Jawliner partials. Set in store settings or restyle header in M7. |
+| **Comparison image weight** | `jaw-before.png` / `jaw-after.png` are ~4–5MB each — optimize WebP for production. |
+| **Console noise** | Permissions-Policy, `cdn.translations.salla.network` 500, `Failed to parse mobile headers` — Salla platform; safe to ignore for theme dev. |
+| **CLI `Tag already exists`** | Salla CLI sync issue — retry preview or bump theme version; see [SALLA-THEME-RAED-CONNECT-CONCLUDE §15](./SALLA-THEME-RAED-CONNECT-CONCLUDE-2026-06-19.md). |
+| **i18n** | Replace hardcoded Arabic with `trans()` + locale files (Phase 2). |
+
+**Verify after rename:** DevTools → Network → filter `jawliner` → image URLs should be **200** from `localhost:<port>/images/jawliner/...`.
 
 ### 4.5 Fonts
 
