@@ -13,12 +13,14 @@
 
 That requires **two separate pipes** to work:
 
-| Pipe | Status (end of session) |
-|------|------------------------|
-| **A — Local preview** (`assets_url=localhost`) | **Works** when CLI running + URL port matches + F5 in iframe |
-| **B — Hosted preview** (CDN / demostore / Partners) | **Blocked** — sync fails + wrong CDN theme loaded |
 
-**Do not confuse them.** Push to GitHub is **not** enough for Pipe B.
+| Pipe                                                | Status (end of session)                                      |
+| --------------------------------------------------- | ------------------------------------------------------------ |
+| **A — Local preview** (`assets_url=localhost`)      | **Works in Chrome** (§15) — CLI running + Chrome. Arc blocked localhost. No push needed. |
+| **B — Hosted preview** (CDN / demostore / Partners) | **Works after git push** (§15) — reads synced repo. Use Chrome.            |
+
+
+**Do not confuse them.** Terminal preview = live disk (no push). Site/demo preview = needs push. **Both need Chrome** — see §15.
 
 ---
 
@@ -26,14 +28,16 @@ That requires **two separate pipes** to work:
 
 ### Linkage (correct — do not change)
 
-| Item | Value |
-|------|-------|
-| Partners theme | **Theme Raed** `1507984290` (development) |
-| GitHub | **`Mrufaihi/theme-raed`** |
-| `git remote origin` | `Mrufaihi/theme-raed` |
-| `twilight.json` → `repository` | `Mrufaihi/theme-raed` |
-| Demo store | **`jawliner saudi`** (`--store="jawliner saudi"`) |
-| CLI | `@salla.sa/cli@3.2.30`, user **yaser ahmed** / GitHub **Mrufaihi** |
+
+| Item                           | Value                                                              |
+| ------------------------------ | ------------------------------------------------------------------ |
+| Partners theme                 | **Theme Raed** `1507984290` (development)                          |
+| GitHub                         | `**Mrufaihi/theme-raed`**                                          |
+| `git remote origin`            | `Mrufaihi/theme-raed`                                              |
+| `twilight.json` → `repository` | `Mrufaihi/theme-raed`                                              |
+| Demo store                     | `**jawliner saudi**` (`--store="jawliner saudi"`)                  |
+| CLI                            | `@salla.sa/cli@3.2.30`, user **yaser ahmed** / GitHub **Mrufaihi** |
+
 
 **Do not** repoint to `Jawliner-Salla-Theme` or Jawliner theme IDs (`383753470`, `799616680`).
 
@@ -62,12 +66,12 @@ That requires **two separate pipes** to work:
 1. **Git push alone** did not update demo store appearance.
 2. **CDN for our theme** `1507984290` → **404** (never built/uploaded to Salla CDN).
 3. **Demo store serves CDN theme `1247874246`** (stock Raed install) — different ID from our Partners theme.
-4. **`salla theme preview` sync step fails:**
-   ```
+4. `**salla theme preview` sync step fails:**
+  ```
    WARN  Tag 1.343.11 already exists
    WARN  Authorization Error:
    ERROR The CLI failed to request preview for the Theme.
-   ```
+  ```
    Localhost servers may start (`Assets URL : http://localhost:8000`) but **no new Preview URL** is printed; **hosted upload/sync is blocked**.
 5. **Port confusion:** stale `localhost:8002` from old runs while CLI uses `8000` — URL port must match terminal output.
 6. **Multiple preview stacks** caused duplicate ports and stale bookmarks.
@@ -88,46 +92,51 @@ Salla builds CDN bundle: cdn.assets.salla.network/themes/{themeId}/{version}/app
 Partners “Preview Theme” on demo store OR demostore signed URL reads that CDN bundle
 ```
 
-**Pipe B is stuck at the sync/upload step** (tag error). Until that succeeds, demo store keeps serving **`1247874246`**.
+**Pipe B is stuck at the sync/upload step** (tag error). Until that succeeds, demo store keeps serving `**1247874246`**.
 
 ---
 
 ## 2. Bugs we faced
 
-| Bug | Notes |
-|-----|-------|
-| `ERR_PNPM_NO_SCRIPT` for `theme:preview` | Script missing in stock `package.json` — use `salla theme preview` directly |
-| Wrong repo (Jawliner-Salla-Theme) | Tag conflicts on old themes — use Theme Raed only |
-| Assumed push = live store update | Push = GitHub only; CDN needs CLI sync |
-| Browser loads CDN when URL has `assets_url=localhost` | Override failed or DevTools on wrong frame; check iframe Network |
-| CDN `1247874246` vs Partners `1507984290` | Demo store not serving our theme bundle |
-| **`Tag 1.343.11 already exists`** + Authorization Error | **Current blocker** for hosted sync |
-| Expired preview tokens | Old `auth/auto` URLs redirect to login |
-| Dirty tree commit prompt | Blocks non-interactive preview |
-| Multiple preview PIDs / port drift | 8000 vs 8002 mismatch |
-| Editor iframe no hot reload | F5 required; webpack rebuild still OK |
+
+| Bug                                                     | Notes                                                                       |
+| ------------------------------------------------------- | --------------------------------------------------------------------------- |
+| `ERR_PNPM_NO_SCRIPT` for `theme:preview`                | Script missing in stock `package.json` — use `salla theme preview` directly |
+| Wrong repo (Jawliner-Salla-Theme)                       | Tag conflicts on old themes — use Theme Raed only                           |
+| Assumed push = live store update                        | Push = GitHub only; CDN needs CLI sync                                      |
+| Browser loads CDN when URL has `assets_url=localhost`   | Override failed or DevTools on wrong frame; check iframe Network            |
+| CDN `1247874246` vs Partners `1507984290`               | Demo store not serving our theme bundle                                     |
+| `**Tag 1.343.11 already exists**` + Authorization Error | **Current blocker** for hosted sync                                         |
+| Expired preview tokens                                  | Old `auth/auto` URLs redirect to login                                      |
+| Dirty tree commit prompt                                | Blocks non-interactive preview                                              |
+| Multiple preview PIDs / port drift                      | 8000 vs 8002 mismatch                                                       |
+| Editor iframe no hot reload                             | F5 required; webpack rebuild still OK                                       |
+
 
 ---
 
 ## 3. Solutions we tried
 
-| Action | Result |
-|--------|--------|
-| Align `origin` + `twilight.json` → `Mrufaihi/theme-raed` | ✓ Theme ID checks pass |
-| `salla theme preview --store="jawliner saudi"` | ✓ Local servers; ✗ sync/tag error at end |
-| SCSS magenta smoke test + webpack | ✓ Local preview confirmed |
-| `git push` magenta test (`be3e9358`) | ✓ On GitHub; ✗ not on Salla CDN |
-| Open demostore / editor without localhost wiring | ✗ CDN `1247874246`, no magenta |
-| Kill duplicate preview stacks | ✓ Reduced port confusion |
-| `salla theme preview --only-link --without-editor` | Worked earlier in session; later hit tag error |
+
+| Action                                                   | Result                                         |
+| -------------------------------------------------------- | ---------------------------------------------- |
+| Align `origin` + `twilight.json` → `Mrufaihi/theme-raed` | ✓ Theme ID checks pass                         |
+| `salla theme preview --store="jawliner saudi"`           | ✓ Local servers; ✗ sync/tag error at end       |
+| SCSS magenta smoke test + webpack                        | ✓ Local preview confirmed                      |
+| `git push` magenta test (`be3e9358`)                     | ✓ On GitHub; ✗ not on Salla CDN                |
+| Open demostore / editor without localhost wiring         | ✗ CDN `1247874246`, no magenta                 |
+| Kill duplicate preview stacks                            | ✓ Reduced port confusion                       |
+| `salla theme preview --only-link --without-editor`       | Worked earlier in session; later hit tag error |
+
 
 ---
 
 ## 4. How to fix `Tag 1.343.11 already exists` (next AI — read carefully)
 
-**What it means:** During preview, the CLI registers a **theme version tag** with Salla’s API (not a local git tag). Salla rejects the upload because version **`1.343.11` already exists** for this theme (or auth failed mid-request). Same class of error as old Jawliner **`Tag 1.2.20 already exists`**.
+**What it means:** During preview, the CLI registers a **theme version tag** with Salla’s API (not a local git tag). Salla rejects the upload because version `**1.343.11` already exists** for this theme (or auth failed mid-request). Same class of error as old Jawliner `**Tag 1.2.20 already exists`**.
 
 **Symptoms:**
+
 - Terminal shows `Assets URL : http://localhost:8000` (local server OK)
 - Then `Tag 1.343.11 already exists` + `Authorization Error`
 - `The CLI failed to request preview for the Theme`
@@ -136,32 +145,28 @@ Partners “Preview Theme” on demo store OR demostore signed URL reads that CD
 ### Fix steps (non-destructive — in order)
 
 1. **Re-auth (do this first)**
-   ```bash
+  ```bash
    salla login
-   ```
+  ```
    Re-link Partners + GitHub PAT with **repo** scope. The `Authorization Error` may be the root cause, with tag error as a side effect.
-
 2. **Single preview only**
-   - Stop all other `salla theme preview` terminals (no duplicate ports).
-   - Run once: `salla theme preview --store="jawliner saudi"`
-
+  - Stop all other `salla theme preview` terminals (no duplicate ports).
+  - Run once: `salla theme preview --store="jawliner saudi"`
 3. **Partners portal (manual bypass)**
-   - [Salla Partners](https://salla.partners/) → **My Themes** → **Theme Raed** (`1507984290`)
-   - Click **Preview Theme** on demo store `jawliner saudi`
-   - Check if hosted preview updates without CLI sync
-
+  - [Salla Partners](https://salla.partners/) → **My Themes** → **Theme Raed** (`1507984290`)
+  - Click **Preview Theme** on demo store `jawliner saudi`
+  - Check if hosted preview updates without CLI sync
 4. **Verify sync target after any successful preview**
-   - DevTools → `app.css` should eventually come from CDN path containing **`1507984290`**, not `1247874246`
-   - Or `curl -sI https://cdn.assets.salla.network/themes/1507984290/…/app.css` → **200** (currently **404**)
-
+  - DevTools → `app.css` should eventually come from CDN path containing `**1507984290`**, not `1247874246`
+  - Or `curl -sI https://cdn.assets.salla.network/themes/1507984290/…/app.css` → **200** (currently **404**)
 5. **Escalate to Salla (if steps 1–3 fail)**
-   - [Salla-CLI issues](https://github.com/SallaApp/Salla-CLI/issues) — include theme ID `1507984290`, store `jawliner saudi`, full error: `Tag 1.343.11 already exists` + `Authorization Error`
-   - Partners support — ask to clear stuck version tag or fix upload auth for Theme Raed
+  - [Salla-CLI issues](https://github.com/SallaApp/Salla-CLI/issues) — include theme ID `1507984290`, store `jawliner saudi`, full error: `Tag 1.343.11 already exists` + `Authorization Error`
+  - Partners support — ask to clear stuck version tag or fix upload auth for Theme Raed
 
 ### Do NOT do without explicit user approval
 
-- **`rm -rf node_modules/.salla-cli`** — user warned against destructive cache deletes; only suggest if user explicitly agrees (cache holds `theme_id`, `draft_id`, `store_id`, `upload_url`)
-- **`git push --force`**, **`git reset --hard`**, deleting tags on GitHub without understanding Salla’s version scheme
+- `**rm -rf node_modules/.salla-cli`** — user warned against destructive cache deletes; only suggest if user explicitly agrees (cache holds `theme_id`, `draft_id`, `store_id`, `upload_url`)
+- `**git push --force**`, `**git reset --hard**`, deleting tags on GitHub without understanding Salla’s version scheme
 - Repointing `twilight.json` / `origin` to Jawliner repos
 
 ---
@@ -184,15 +189,16 @@ Partners “Preview Theme” on demo store OR demostore signed URL reads that CD
 
 **Primary goal:** Pipe B — hosted demo store shows our changes.
 
-1. Fix **`Tag 1.343.11 already exists`** (section 4 above).
+1. Fix `**Tag 1.343.11 already exists`** (section 4 above).
 2. After sync succeeds, confirm CDN:
-   - `https://cdn.assets.salla.network/themes/1507984290/…/app.css` → **200** + contains smoke-test rule or new `last-modified`.
-3. Open **Partners → Preview Theme** on `jawliner saudi`; Network must show **`1507984290`** CDN path (not `1247874246`).
+  - `https://cdn.assets.salla.network/themes/1507984290/…/app.css` → **200** + contains smoke-test rule or new `last-modified`.
+3. Open **Partners → Preview Theme** on `jawliner saudi`; Network must show `**1507984290`** CDN path (not `1247874246`).
 4. Verify magenta header on **hosted** demostore (no `assets_url=localhost`).
 5. Revert smoke-test SCSS (`#ff00ff`) once hosted path confirmed.
 6. Document final working hosted workflow in this file.
 
 **Secondary (Pipe A — already working):**
+
 ```bash
 salla theme preview --store="jawliner saudi"
 # Open printed Preview URL; DevTools iframe → localhost:PORT/app.css (200)
@@ -203,14 +209,16 @@ salla theme preview --store="jawliner saudi"
 
 ## 7. Quick diagnostic cheatsheet
 
-| Check | Pass | Fail = |
-|-------|------|--------|
-| `curl localhost:8000/app.css \| grep ff00ff` | Local build OK | Run `pnpm run development` |
-| Network: `localhost:8000/app.css` in preview iframe | Pipe A OK | Wrong port, CLI dead, or wrong frame |
-| Network: `cdn.../1247874246/.../app.css` | Stock theme, not ours | Expected until sync fixes theme assignment |
-| Network: `cdn.../1507984290/.../app.css` | Pipe B OK | Sync not done yet |
-| `salla theme preview` prints Preview URL | Sync OK | Tag/auth error — fix section 4 |
-| `salla theme list` shows `1507984290` | Linkage OK | Fix origin / Partners |
+
+| Check                                               | Pass                  | Fail =                                     |
+| --------------------------------------------------- | --------------------- | ------------------------------------------ |
+| `curl localhost:8000/app.css | grep ff00ff`         | Local build OK        | Run `pnpm run development`                 |
+| Network: `localhost:8000/app.css` in preview iframe | Pipe A OK             | Wrong port, CLI dead, or wrong frame       |
+| Network: `cdn.../1247874246/.../app.css`            | Stock theme, not ours | Expected until sync fixes theme assignment |
+| Network: `cdn.../1507984290/.../app.css`            | Pipe B OK             | Sync not done yet                          |
+| `salla theme preview` prints Preview URL            | Sync OK               | Tag/auth error — fix section 4             |
+| `salla theme list` shows `1507984290`               | Linkage OK            | Fix origin / Partners                      |
+
 
 ---
 
@@ -218,13 +226,13 @@ salla theme preview --store="jawliner saudi"
 
 - User corrected: **do not change `twilight.json` repository to Jawliner**.
 - Docs were confusing; user needed clear separation of **local vs CDN vs push**.
-- Assistant previously suggested **`rm -rf node_modules/.salla-cli`** — user does **not** want destructive actions without explicit approval.
+- Assistant previously suggested `**rm -rf node_modules/.salla-cli`** — user does **not** want destructive actions without explicit approval.
 
 ---
 
 ## 9. Repo state at wrap-up
 
-- **Branch:** `master`, pushed through **`be3e9358`** (magenta smoke test since reverted in header.scss).
+- **Branch:** `master`, pushed through `**be3e9358`** (magenta smoke test since reverted in header.scss).
 - **Smoke test:** reverted — Path 1 hybrid preview confirmed; see §11.
 - **Preview CLI:** failing at sync with **Tag 1.343.11**; localhost may start but hosted path blocked.
 - **Stash:** `stash@{0}: temp: preview connect` (master.twig + app.css) — not restored.
@@ -253,21 +261,23 @@ git push origin master        # GitHub only — CDN needs successful preview syn
 
 ### Fixed: CLI tag/auth blocker (Pipe A + sync step)
 
-- **Root cause of `Tag 1.343.11`:** CLI uses **git tags** (`git describe`), not `package.json`. Stuck Salla-side tag cleared by pushing **`1.343.12`** (+ twig touch commit `1556af76`).
-- **`salla theme preview --store="jawliner saudi" --without-editor`** now prints **Preview URL** with no tag error.
+- **Root cause of `Tag 1.343.11`:** CLI uses **git tags** (`git describe`), not `package.json`. Stuck Salla-side tag cleared by pushing `**1.343.12`** (+ twig touch commit `1556af76`).
+- `**salla theme preview --store="jawliner saudi" --without-editor**` now prints **Preview URL** with no tag error.
 - **Local CSS verified:** `localhost:800x/app.css` contains `#ff00ff`.
 
 ### Still blocked: Pipe B (hosted CDN)
 
-| Check | Result |
-|-------|--------|
-| `cdn.../themes/1507984290/{1.343.11–1.343.15}/app.css` | **404** (all versions) |
-| Partners Preview Theme → draft `2091709388` | Opens editor ✓ but Network still **`1247874246/1.350.0/app.css`** |
-| Bare demostore `dev-avlhkpcoenpgyf3q` | Still **`1247874246`** |
-| Partners portal version | Still shows **`1.343.11`** despite GitHub tags `1.343.12+` on `master` |
-| Hosted magenta (no localhost) | **Not confirmed** |
 
-**User actions taken:** Partners → GitHub branch **`master`** → Save Changes → **Preview Theme** on Jawliner Saudi.
+| Check                                                  | Result                                                                 |
+| ------------------------------------------------------ | ---------------------------------------------------------------------- |
+| `cdn.../themes/1507984290/{1.343.11–1.343.15}/app.css` | **404** (all versions)                                                 |
+| Partners Preview Theme → draft `2091709388`            | Opens editor ✓ but Network still `**1247874246/1.350.0/app.css`**      |
+| Bare demostore `dev-avlhkpcoenpgyf3q`                  | Still `**1247874246**`                                                 |
+| Partners portal version                                | Still shows `**1.343.11**` despite GitHub tags `1.343.12+` on `master` |
+| Hosted magenta (no localhost)                          | **Not confirmed**                                                      |
+
+
+**User actions taken:** Partners → GitHub branch `**master`** → Save Changes → **Preview Theme** on Jawliner Saudi.
 
 **#120 reframe:** [SALLA-CLI-120-REFRAME-COMMENT.md](./SALLA-CLI-120-REFRAME-COMMENT.md) — CDN 404 after preview alone is expected; close issue as wrong premise.
 
@@ -279,12 +289,14 @@ git push origin master        # GitHub only — CDN needs successful preview syn
 
 ### Verdict: **mostly our oversight, not a Salla CDN-build bug**
 
-| Question | Answer |
-|----------|--------|
-| Is Salla broken because `cdn.../1507984290/*` is 404? | **No** — that path only exists after **theme installation / publish**, not after `theme preview`. |
-| Did `salla theme preview` sync succeed? | **Yes** — prints Preview URL; local `localhost:8006/app.css` contains `#ff00ff`. |
-| Why does bare demostore / watch HTML still show `1247874246`? | Demo store has **stock Raed installed** (`1247874246` → 200). Preview is **hybrid**: Salla HTML + **local** assets via `assets_url=`. |
-| Is [Salla-CLI #120](https://github.com/SallaApp/Salla-CLI/issues/120) valid? | **Wrong premise** — filed expecting CDN publish from preview. Reframe or close once Path 1 confirmed. |
+
+| Question                                                                     | Answer                                                                                                                                |
+| ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| Is Salla broken because `cdn.../1507984290/`* is 404?                        | **No** — that path only exists after **theme installation / publish**, not after `theme preview`.                                     |
+| Did `salla theme preview` sync succeed?                                      | **Yes** — prints Preview URL; local `localhost:8006/app.css` contains `#ff00ff`.                                                      |
+| Why does bare demostore / watch HTML still show `1247874246`?                | Demo store has **stock Raed installed** (`1247874246` → 200). Preview is **hybrid**: Salla HTML + **local** assets via `assets_url=`. |
+| Is [Salla-CLI #120](https://github.com/SallaApp/Salla-CLI/issues/120) valid? | **Wrong premise** — filed expecting CDN publish from preview. Reframe or close once Path 1 confirmed.                                 |
+
 
 ### Path 1 (hybrid dev loop) — evidence this session
 
@@ -317,7 +329,7 @@ Full install checklist: **[JAWLINER-THEME-INSTALL-WITH-MERCHANT.md](./JAWLINER-T
 
 1. **#120 reframe** — draft ready: [SALLA-CLI-120-REFRAME-COMMENT.md](./SALLA-CLI-120-REFRAME-COMMENT.md) (paste on GitHub, then close)
 2. **Install-link 404 + curl checks** — synced to [JAWLINER-THEME-INSTALL-WITH-MERCHANT.md](./JAWLINER-THEME-INSTALL-WITH-MERCHANT.md) § verification commands
-3. **Smoke test reverted** — `#ff00ff` removed from [header.scss](../src/assets/styles/04-components/header.scss); Path 1 hybrid preview confirmed
+3. **Smoke test reverted** — user later asked to **keep** `#ff00ff` in header.scss until hosted path confirmed
 4. **Tag cleanup** — deferred; see §12 below (needs explicit user OK before delete)
 
 ---
@@ -347,29 +359,144 @@ curl -sI "https://cdn.assets.salla.network/themes/1247874246/1.350.0/app.css"
 
 ---
 
-## 13. Junk git tags `1.343.12`–`1.343.22` (cleanup deferred)
+## 13. Junk git tags `1.343.12`–`1.343.22` (done)
 
-Hand-pushed tags on the same commit while debugging CLI tag errors. **Do not delete** without explicit user OK.
+Deleted locally + on GitHub (user approved). Tags `1.343.27`–`1.343.30` exist on newer commits.
 
-When approved, run locally then on GitHub:
-
-```bash
-# List first
-git tag -l '1.343.1*'
-
-# Local delete (example — run full range only after user OK)
-for t in 1.343.12 1.343.13 1.343.14 1.343.15 1.343.16 1.343.17 1.343.18 1.343.19 1.343.20 1.343.21 1.343.22; do
-  git tag -d "$t"
-done
-
-# Remote delete (same explicit OK required)
-for t in 1.343.12 1.343.13 1.343.14 1.343.15 1.343.16 1.343.17 1.343.18 1.343.19 1.343.20 1.343.21 1.343.22; do
-  git push origin --delete "$t"
-done
-```
-
-Keep `1.343.0`–`1.343.7` unless Salla Partners shows a conflict.
+**Tag error still blocks preview sync** — `Tag 1.343.11 already exists` + `Authorization Error` is a **Salla-side** stuck version, not a running process. Fix: `salla login`, then new commit so CLI bumps past stuck tag, or Partners support to clear `1.343.11` on theme `1507984290`.
 
 ---
 
-_Last updated: 2026-06-19 — agent plan complete; Path 1 confirmed; Path 2 install in JAWLINER-THEME-INSTALL-WITH-MERCHANT.md._
+## 14. Update (2026-06-19 evening) — reordered priorities
+
+### Situation (correct order)
+
+
+| #   | What                                       | Status                                                                                        |
+| --- | ------------------------------------------ | --------------------------------------------------------------------------------------------- |
+| 1   | **Private theme publish + Salla approval** | **Blocker** for merchant install — must complete theme info, images, price, submit for review |
+| 2   | **Merchant install** (jawlinerksa.com)     | Blocked until #1 approved + private allowed list                                              |
+| 3   | **Local hybrid preview** (Path 1)          | **RESOLVED in §15** — was Arc browser, works in Chrome                                         |
+| 4   | **Migrate Jawliner UI from V2**            | Dev work while #1 in review                                                                   |
+
+> **NOTE (see §15):** This §14 ordering is partly superseded. Local dev fully works via terminal preview in Chrome — merchant install/publish only needed for go-live, not development.
+
+
+### OAuth vs theme (Partners FAQ clarified)
+
+- **OAuth 2.0** = **Apps** only (API tokens). **Not needed for themes.**
+- **Themes** = `salla login` + GitHub link (already ✓).
+- **“Publish your App”** message = wrong product — ignore for theme work. Use **My Themes**, not **My Apps**.
+- **“jawliner testing 2 (Connected)”** = App on demo store — unrelated to Theme Raed `1507984290`.
+
+### Private publish — does Salla need a “full” theme?
+
+**Yes, minimum package for approval** (lighter than public marketplace):
+
+- Theme name, description, screenshots, icon/cover images
+- Price (private: 1000–5000 SAR range)
+- Demo store selected for preview listing
+- Basic components/settings filled — does **not** need every page perfect; needs to look intentional, not empty shell
+
+**Merchant 404 on notification** = theme not approved yet, wrong portal (App vs Theme), or merchant not in **تصميم المتجر → طلبات تطوير الثيمات** (not “Theme development requests” in English UI — Arabic path above).
+
+### Demo store mess (`jawliner saudi`)
+
+Repeated install/preview requests may have left demo store in a confused state (stock Raed `1247874246` still serving CDN).
+
+**Options:**
+
+- **A.** Create fresh demo store in Partners → **Create Demo Store** → use for preview + publish screenshots
+- **B.** Keep `jawliner saudi` for hybrid preview only; pick clean store for publish listing
+- **C.** Use `jawliner saudi twig testing 3` (no App installed) as alternate preview target
+
+### CLI tag error (not a kill issue)
+
+Ports can be clear but preview still fails — error is **API-side** when CLI registers version. Kill command for local servers only:
+
+```bash
+pkill -f 'salla theme serve'; pkill -f 'salla theme preview'
+```
+
+### Recommended path (parallel tracks)
+
+```
+Track A (you, Partners)          Track B (dev, local)
+─────────────────────────          ────────────────────
+Fill theme images + metadata     Migrate V2 diffs → theme-raed (Twig/SCSS)
+Submit private publish           Hybrid preview when tag/auth fixed
+Pick clean demo store            Keep #ff00ff smoke test until hosted confirmed
+Wait Salla approval              Don't block on merchant install yet
+Then → merchant install flow     (JAWLINER-THEME-INSTALL-WITH-MERCHANT.md)
+```
+
+### V2 → theme-raed migration (next dev work)
+
+Source: [Jawliner-Saudi-V2/](../Jawliner-Saudi-V2/) (old repo `Mrufaihi/jawliner-saudi-v2`)
+
+**Only 4 `src/` files differ from current theme-raed** — start here:
+
+
+| File                                          | What to port                                 |
+| --------------------------------------------- | -------------------------------------------- |
+| `src/assets/styles/01-settings/global.scss`   | Colors, fonts, tokens                        |
+| `src/assets/styles/04-components/header.scss` | Header styling (merge with smoke test block) |
+| `src/views/components/header/header.twig`     | Header markup / nav                          |
+| `src/views/layouts/master.twig`               | Layout shell, meta, scripts                  |
+
+
+**Order:** global.scss → header (twig + scss) → master.twig → verify in hybrid preview.
+
+**Do not:** repoint `twilight.json`/`origin` to V2 repo or Jawliner theme IDs.
+
+### Smoke test
+
+User wants `**#ff00ff` kept** in header.scss until hosted path confirmed.
+
+### Open blockers
+
+1. `Tag 1.343.11 already exists` — run `salla login`; may need Salla to clear stuck version on Partners
+2. Theme not submitted for private publish yet
+3. Merchant install untested until approval
+
+---
+
+## 15. BREAKTHROUGH (2026-06-19 night) — it was the BROWSER, not the pipeline
+
+### Root cause: Arc blocked localhost injection. Chrome works.
+
+Switched preview browser Arc → **Chrome** and changes appeared immediately. Magenta header + Jawliner branding render correctly. **No merchant install, no CDN publish needed to develop.**
+
+### Two confirmed working preview paths
+
+| Path | Command | Needs git push? | Assets from |
+|------|---------|-----------------|-------------|
+| **Terminal hybrid** | `salla theme preview --without-editor` (open in Chrome) | **No** | `localhost:8000` (live, hot reload) |
+| **Salla site demo preview** | Partners/editor "Preview" in **Chrome** | **Yes** | pushed repo |
+
+- **Terminal preview = fastest loop** — edit `src/` → webpack → refresh, no commit.
+- **Site preview = needs push** because it reads the synced repo, not your disk.
+
+### What was actually wrong all along
+
+- Not the tag error, not CDN 404, not unpublished theme — **Arc** silently fell back to CDN `1247874246` instead of loading `localhost:8000`.
+- Same URL behaved differently per browser: Chrome honored `assets_url=localhost`, Arc blocked it.
+- **Lesson:** Salla CLI defaults to Chrome for a reason. Always preview in Chrome.
+
+### Do we need merchant install to develop? **NO.**
+
+Local development works fully via terminal hybrid preview in Chrome. Merchant install / private publish is only for **going live on jawlinerksa.com** — not for dev iteration.
+
+### Revised priorities (supersedes §14)
+
+| # | What | Status |
+|---|------|--------|
+| 1 | **Local dev loop** (terminal preview + Chrome) | **WORKS** — primary workflow |
+| 2 | **Migrate Jawliner UI from V2** (4 files) | Active dev work |
+| 3 | Private publish + merchant install | **Deferred** — only when ready to go live |
+
+§14 "publish-first" reasoning is **downgraded**: publish is for go-live, not development.
+
+---
+
+*Last updated: 2026-06-19 night — BROWSER was the culprit (Arc vs Chrome). Local dev unblocked; merchant install deferred to go-live.*

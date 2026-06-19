@@ -20,8 +20,11 @@ Theme repo root (`twilight.json`):
 
 ```bash
 pnpm install
+
 pnpm run development
+
 pnpm exec salla login
+
 pnpm run theme:preview
 ```
 

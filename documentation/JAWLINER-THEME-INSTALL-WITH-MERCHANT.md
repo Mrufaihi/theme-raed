@@ -1,5 +1,7 @@
 # Jawliner theme install — you + merchant checklist
 
+> **THIS IS FOR GO-LIVE ONLY (not development).** Local dev works fully via `salla theme preview --without-editor` in **Chrome** — no merchant install needed. See §15 in [SALLA-THEME-RAED-CONNECT-CONCLUDE-2026-06-19.md](./SALLA-THEME-RAED-CONNECT-CONCLUDE-2026-06-19.md). Only follow this checklist when ready to put the theme on the real store.
+
 **Goal:** Get theme **1507984290** onto **[jawlinerksa.com](https://jawlinerksa.com/)** for hosted testing **without** going live until the merchant **activates**.
 
 **Agent handles:** code, docs, CDN diagnostics, smoke-test revert, #120 reframe.  
