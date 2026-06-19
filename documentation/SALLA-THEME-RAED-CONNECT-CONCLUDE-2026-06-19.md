@@ -247,4 +247,82 @@ git push origin master        # GitHub only — CDN needs successful preview syn
 
 ---
 
-_Last updated: 2026-06-19 — session wrap-up: local preview OK, hosted blocked on Tag 1.343.11 + CDN theme mismatch._
+---
+
+## 10. Update (2026-06-19 resumed session)
+
+### Fixed: CLI tag/auth blocker (Pipe A + sync step)
+
+- **Root cause of `Tag 1.343.11`:** CLI uses **git tags** (`git describe`), not `package.json`. Stuck Salla-side tag cleared by pushing **`1.343.12`** (+ twig touch commit `1556af76`).
+- **`salla theme preview --store="jawliner saudi" --without-editor`** now prints **Preview URL** with no tag error.
+- **Local CSS verified:** `localhost:800x/app.css` contains `#ff00ff`.
+
+### Still blocked: Pipe B (hosted CDN)
+
+| Check | Result |
+|-------|--------|
+| `cdn.../themes/1507984290/{1.343.11–1.343.15}/app.css` | **404** (all versions) |
+| Partners Preview Theme → draft `2091709388` | Opens editor ✓ but Network still **`1247874246/1.350.0/app.css`** |
+| Bare demostore `dev-avlhkpcoenpgyf3q` | Still **`1247874246`** |
+| Partners portal version | Still shows **`1.343.11`** despite GitHub tags `1.343.12+` on `master` |
+| Hosted magenta (no localhost) | **Not confirmed** |
+
+**User actions taken:** Partners → GitHub branch **`master`** → Save Changes → **Preview Theme** on Jawliner Saudi.
+
+**Escalation:** [Salla-CLI #120](https://github.com/SallaApp/Salla-CLI/issues/120) — CDN never builds for theme `1507984290`.
+
+### Do not revert smoke test yet
+
+Keep `#ff00ff` in [header.scss](../src/assets/styles/04-components/header.scss) until CDN `1507984290` returns **200** and hosted preview loads our theme ID.
+
+---
+
+---
+
+## 11. Update (2026-06-19 — next session: Salla bug vs oversight)
+
+### Verdict: **mostly our oversight, not a Salla CDN-build bug**
+
+| Question | Answer |
+|----------|--------|
+| Is Salla broken because `cdn.../1507984290/*` is 404? | **No** — that path only exists after **theme installation / publish**, not after `theme preview`. |
+| Did `salla theme preview` sync succeed? | **Yes** — prints Preview URL; local `localhost:8006/app.css` contains `#ff00ff`. |
+| Why does bare demostore / watch HTML still show `1247874246`? | Demo store has **stock Raed installed** (`1247874246` → 200). Preview is **hybrid**: Salla HTML + **local** assets via `assets_url=`. |
+| Is [Salla-CLI #120](https://github.com/SallaApp/Salla-CLI/issues/120) valid? | **Wrong premise** — filed expecting CDN publish from preview. Reframe or close once Path 1 confirmed. |
+
+### Path 1 (hybrid dev loop) — evidence this session
+
+- Active preview: **port 8006** / ws **8007** (`draft-1888704288`).
+- Editor URL correctly includes `assets_url=http://localhost:8006`.
+- Iframe `store_preview` src includes same `assets_url` + `ws_port`.
+- `curl localhost:8006/app.css` → **200** + `#ff00ff`.
+- **Not yet confirmed:** magenta header visible in storefront iframe (preview pane was blank; watch HTML has `"maintenance":true` — demo store may be in maintenance overlay).
+
+### Path 2 (true hosted, no localhost)
+
+Install theme **1507984290** on `jawliner saudi` via Partners **Theme Installation** ([Setup a theme](https://docs.salla.dev/421879m0)). Only then does CDN `1507984290/{version}/app.css` get built. Changes are static until re-synced.
+
+### Mistakes we made (confirmed)
+
+1. Used **CDN 1507984290 200** as preview success metric — wrong artifact.
+2. Opened bare demostore / Partners editor **without** matching `assets_url` port → always saw `1247874246`.
+3. Hand-pushed tags `1.343.12`–`1.343.22` — CLI auto-increments; created junk tags on same commit.
+4. Filed #120 before reading that preview never publishes CDN bundles.
+
+### Path 1 confirmed (user)
+
+Hybrid editor URL with matching `assets_url` + `ws_port` shows magenta. Dev loop works.
+
+### You + merchant (not agent)
+
+Full install checklist: **[JAWLINER-THEME-INSTALL-WITH-MERCHANT.md](./JAWLINER-THEME-INSTALL-WITH-MERCHANT.md)** — Partners private setup, send request, merchant accept, test without activate, go-live.
+
+### Agent still to do
+
+1. Reframe/close [Salla-CLI #120](https://github.com/SallaApp/Salla-CLI/issues/120)
+2. Revert `#ff00ff` after hosted install confirmed
+3. Tag cleanup `1.343.12`–`1.343.22` — only with explicit OK
+
+---
+
+_Last updated: 2026-06-19 — Path 1 confirmed; install flow moved to JAWLINER-THEME-INSTALL-WITH-MERCHANT.md._
