@@ -1,6 +1,6 @@
 {% set videos = [
-    'images/jawliner/tiktok 2.mp4',
-    'images/jawliner/tiktok 4.mp4'
+    'images/jawliner/tiktok-2.mp4',
+    'images/jawliner/tiktok-4.mp4'
 ] %}
 
 <section class="py-16 bg-primary" id="jawliner-testimonials">
@@ -20,12 +20,12 @@
                     <div class="swiper-slide w-[60%] md:w-[25%] p-3">
                         <div class="border-[3px] border-accent rounded-lg overflow-hidden">
                             <video
-                                class="w-full aspect-[9/16] object-cover jawliner-lazy-video"
+                                class="w-full aspect-[9/16] object-cover"
                                 autoplay
                                 muted
                                 loop
                                 playsinline
-                                data-src="{{ video | asset }}"
+                                src="{{ video | asset }}"
                             ></video>
                         </div>
                     </div>

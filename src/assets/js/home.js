@@ -31,7 +31,6 @@ class Home extends BasePage {
 
         this.initFaq(root);
         this.initComparisonSlider();
-        this.initLazyVideos(root);
     }
 
     initFaq(root) {
@@ -84,33 +83,6 @@ class Home extends BasePage {
         document.addEventListener('touchend', () => {
             dragging = false;
         });
-    }
-
-    initLazyVideos(root) {
-        const videos = root.querySelectorAll('video[data-src]');
-        if (!videos.length) return;
-
-        const loadVideo = (video) => {
-            if (!video.dataset.src || video.src) return;
-            video.src = video.dataset.src;
-            video.removeAttribute('data-src');
-        };
-
-        if (!('IntersectionObserver' in window)) {
-            videos.forEach(loadVideo);
-            return;
-        }
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach((entry) => {
-                if (entry.isIntersecting) {
-                    loadVideo(entry.target);
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, { rootMargin: '100px' });
-
-        videos.forEach((video) => observer.observe(video));
     }
 }
 
