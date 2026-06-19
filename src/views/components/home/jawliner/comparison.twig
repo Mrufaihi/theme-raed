@@ -1,0 +1,47 @@
+<section class="flex flex-col justify-center items-center py-20 md:py-32 gap-8 md:gap-12 bg-primary px-4" id="jawliner-comparison">
+    <div class="container mx-auto px-4 py-16">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+            <div class="flex flex-col items-center text-center">
+                <h2 class="text-4xl sm:text-5xl md:text-6xl font-bold mb-4">شوف الفرق</h2>
+                <p class="text-2xl md:text-3xl font-bold text-secondary">تحول خلال بضعة أشهر</p>
+            </div>
+            <div class="flex justify-center overflow-hidden px-4 sm:px-6">
+                <div class="relative w-full max-w-2xl mx-auto min-h-[37vh] rounded-lg overflow-hidden" id="jawliner-comparison-container">
+                    <img
+                        src="{{ 'images/jawliner/lame ah jaw 1920 final 1.png' | asset }}"
+                        alt="قبل"
+                        class="absolute inset-0 w-full h-full object-contain rounded-lg"
+                        style="clip-path: inset(0 45% 0 0); filter: grayscale(100%);"
+                        id="jawliner-before"
+                        loading="lazy"
+                    />
+                    <img
+                        src="{{ 'images/jawliner/x8 last jaw 1920 px 4.png' | asset }}"
+                        alt="بعد"
+                        class="absolute inset-0 w-full h-full object-contain rounded-lg"
+                        style="clip-path: inset(0 0 0 55%);"
+                        id="jawliner-after"
+                        loading="lazy"
+                    />
+                    <div
+                        class="absolute top-0 bottom-0 w-1 bg-accent cursor-ew-resize"
+                        style="left: 55%; transform: translateX(-50%)"
+                        id="jawliner-divider"
+                    >
+                        <div class="absolute top-1/2 left-1/2 w-8 h-8 bg-accent rounded-full transform -translate-x-1/2 -translate-y-1/2 flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" class="text-black">
+                                <path d="M21.92 11.62a1 1 0 0 0-.21-.33l-2.5-2.5a1 1 0 0 0-1.42 1.42l.8.79H13V8a1 1 0 0 0-2 0v3H5.41l.8-.79a1 1 0 0 0-1.42-1.42l-2.5 2.5a1 1 0 0 0-.21.33a1 1 0 0 0 0 .76a1 1 0 0 0 .21.33l2.5 2.5a1 1 0 0 0 1.42 0a1 1 0 0 0 0-1.42l-.8-.79H11v3a1 1 0 0 0 2 0v-3h5.59l-.8.79a1 1 0 0 0 0 1.42a1 1 0 0 0 1.42 0l2.5-2.5a1 1 0 0 0 .21-.33a1 1 0 0 0 0-.76Z"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <img
+        src="{{ 'images/jawliner/jawliner-vs-regular.png' | asset }}"
+        alt="جولاينر مقابل العلكة العادية"
+        class="w-full min-w-0 h-auto sm:max-w-[350px] md:max-w-[620px] lg:max-w-[720px] mx-auto mt-16"
+        loading="lazy"
+    />
+</section>

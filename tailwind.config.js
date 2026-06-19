@@ -34,7 +34,11 @@ module.exports = {
                 'dark'         : '#1D1F1F',
                 'darker'       : '#0E0F0F',
                 'danger'       : '#AE0A0A',
-                'primary-dark' : 'var(--color-primary-dark)'
+                'primary-dark' : 'var(--color-primary-dark)',
+                'fesfor'       : {
+                    DEFAULT: '#c2dc04',
+                    hover  : '#a8b803',
+                },
             },
             spacing: {
               '3.75': '15px',
@@ -124,10 +128,15 @@ module.exports = {
                     '0%': { transform: 'translateY(0%)', opacity: '1' },
                     '100%': { transform: 'translateY(100%)', opacity: '0' },
                 },
+                logoSlide: {
+                    from: { transform: 'translateX(0)' },
+                    to  : { transform: 'translateX(-100%)' },
+                },
             },
             animation: {
                 slideUpFromBottom: 'slideUpFromBottom .6s linear',
                 slideDownFromBottom: 'slideDownFromBottom .6s linear',
+                logoSlide: 'logoSlide 60s linear infinite',
             },
         },
     },

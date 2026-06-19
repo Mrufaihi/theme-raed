@@ -1,0 +1,36 @@
+{% set videos = [
+    'images/jawliner/tiktok 2.mp4',
+    'images/jawliner/tiktok 4.mp4'
+] %}
+
+<section class="py-16 bg-primary" id="jawliner-testimonials">
+    <div class="container mx-auto text-center">
+        <h2 class="text-4xl md:text-6xl font-bold py-8 md:py-16 text-primary">الناس وش يقولون عنا؟</h2>
+        <salla-slider
+            id="jawliner-testimonials-slider"
+            type="carousel"
+            centered
+            auto-play
+            controls-outer
+            slides-per-view="auto"
+            class="jawliner-testimonials-slider"
+        >
+            <div slot="items">
+                {% for video in videos %}
+                    <div class="swiper-slide w-[60%] md:w-[25%] p-3">
+                        <div class="border-[3px] border-accent rounded-lg overflow-hidden">
+                            <video
+                                class="w-full aspect-[9/16] object-cover jawliner-lazy-video"
+                                autoplay
+                                muted
+                                loop
+                                playsinline
+                                data-src="{{ video | asset }}"
+                            ></video>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </salla-slider>
+    </div>
+</section>

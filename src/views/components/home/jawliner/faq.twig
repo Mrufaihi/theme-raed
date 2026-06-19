@@ -1,0 +1,50 @@
+{% set faqs = [
+    {
+        q: 'متى أبدأ ألاحظ النتائج؟',
+        a: 'راح تلاحظ نتيجة مباشرة بعد كل جلسة — عضلات فكك راح تحس انها اقوى مؤقتًا مثل أي عضلة بعد تمرين قوي. أما بخصوص نمو العضلة بشكل دائم، فعادة تبدأ التغييرات الواضحة تظهر معك خلال 2 إلى 4 أسابيع من الالتزام.'
+    },
+    {
+        q: 'هل جولاينر كافي للحصول على فك أفضل؟',
+        a: 'أول خطوة هي خسارة الدهون — لأن تقليل الدهون يبرز شكل الفك تلقائيًا. عشان توصل لفك أعرض وأكثر رجولة، تحتاج تقوي عضلات الفك نفسها. علكتنا فائقة القساوة تعطي مقاومة حقيقية تساعد على تقوية عضلة المضغ.'
+    },
+    {
+        q: 'هل العلكة مناسبة للنساء أيضًا؟',
+        a: 'الأكيد انها ما تقتصر على الرجال. كثير من النساء يطمحون للحصول على ملامح وجه مشدودة وفك أكثر تحديد. التمارين نفسها، لكن النتائج تختلف حسب أهداف الشخص!'
+    },
+    {
+        q: 'كم المدة اليومية الموصى بها لاستخدام علكة جولاينر؟',
+        a: 'المدة المثالية هي 10 -15 دقائق فقط يوميًا. هذا الوقت كافي لتحفيز عضلات الفك وتحقيق نتائج واضحة وآمنة. الاستمرارية أهم من المدة.'
+    },
+    {
+        q: 'هل يمكنني استخدام العلكة إذا كان لدي تقويم أسنان؟',
+        a: 'لا ننصح باستخدام العلكة أثناء وجود تقويم، لأن الضغط الناتج عن التمرين قد يؤثر على الأسنان أو أجهزة التقويم. يُفضل الانتظار حتى انتهاء فترة العلاج، أو استشارة طبيبك المختص قبل الاستخدام.'
+    },
+    {
+        q: 'هل فيه حالات ماننصح فيها انك تستخدم العلكة؟',
+        a: 'تنبيه مهم: في حال كنت تعاني من مشاكل في الأسنان او الفك، أو لديك مشاكل في مفصل الفك (TMJ)، ننصح بعدم استخدام هذه العلكة. المنتج مصمّم ليكون قاسيًا جدًا وقد يسبّب ضغطًا إضافيًا.'
+    }
+] %}
+
+<section class="relative overflow-hidden bg-transparent py-8" id="jawliner-faq">
+    <div class="container mx-auto">
+        <div class="mx-auto max-w-2xl text-center px-6 lg:px-8">
+            <h2 class="mt-2 mb-2 text-3xl font-bold tracking-tight text-primary sm:text-4xl">الاسئلة الشائعة!</h2>
+            <div class="my-2 mx-auto w-28 h-0 border-2 border-accent"></div>
+        </div>
+        <div class="grid items-start grid-cols-1 md:grid-cols-2 gap-4 pt-4 px-4">
+            {% for item in faqs %}
+                <div class="single-faq w-full rounded-lg border border-secondary bg-product py-3 px-5">
+                    <button type="button" class="faq-btn flex justify-between items-center w-full gap-2">
+                        <p class="text-base text-primary rtl:text-right ltr:text-left">{{ item.q }}</p>
+                        <svg class="bg-accent text-black rounded-full p-1 w-6 h-6 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                        </svg>
+                    </button>
+                    <div class="faq-content">
+                        <p class="py-3 text-sm text-secondary">{{ item.a }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>

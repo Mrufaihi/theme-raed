@@ -1,0 +1,83 @@
+/* Jawliner home — scoped to avoid clashing with Salla theme primary utilities */
+.jawliner-home {
+    --jaw-color-primary: linear-gradient(135deg, #1e1d1d 0%, #111 40%, #111 70%, #1e1d1d 100%);
+    --jaw-color-hero: linear-gradient(150deg, rgba(0, 0, 0, 1) 0%, rgba(23, 23, 23, 1) 50%, rgba(0, 0, 0, 1) 100%);
+    --jaw-color-product: linear-gradient(135deg, #1e1d1d 0%, #111 60%);
+    --jaw-color-secondary: #262626;
+    --jaw-color-text-primary: #fafafa;
+    --jaw-color-text-secondary: #d4d4d4;
+    --jaw-color-accent: #c2dc04;
+    --jaw-color-accent-button: linear-gradient(135deg, #c2dc04 0%, #00cc6a 50%, #c2dc04 100%);
+
+    @apply text-white;
+
+    .bg-primary {
+        background:
+            radial-gradient(ellipse 120% 100% at 50% 100%, rgba(50, 50, 50, 0.3) 0%, transparent 65%),
+            var(--jaw-color-primary);
+    }
+
+    .bg-hero {
+        background: var(--jaw-color-hero);
+    }
+
+    .bg-product {
+        background: var(--jaw-color-product);
+    }
+
+    .bg-secondary {
+        background: var(--jaw-color-secondary);
+    }
+
+    .bg-accent {
+        background: var(--jaw-color-accent);
+    }
+
+    .bg-accent-button {
+        background: var(--jaw-color-accent-button);
+    }
+
+    .text-primary {
+        color: var(--jaw-color-text-primary);
+    }
+
+    .text-secondary {
+        color: var(--jaw-color-text-secondary);
+    }
+
+    .text-accent {
+        color: var(--jaw-color-accent);
+    }
+
+    .border-secondary {
+        border-color: var(--jaw-color-secondary);
+    }
+
+    .border-accent {
+        border-color: var(--jaw-color-accent);
+    }
+
+    .logo-slider {
+        @apply flex w-max animate-logoSlide;
+    }
+
+    .logo-slider img {
+        @apply shrink-0;
+    }
+
+    .faq-content {
+        @apply hidden;
+    }
+
+    .single-faq.open .faq-content {
+        @apply block;
+    }
+
+    .single-faq.open .faq-btn svg {
+        @apply rotate-180;
+    }
+
+    .faq-btn svg {
+        @apply transition-transform duration-200;
+    }
+}
