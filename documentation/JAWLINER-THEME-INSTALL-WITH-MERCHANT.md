@@ -112,6 +112,36 @@ Do in order:
 4. Confused Flow A (request) with Flow B (link)
 5. Private theme price not set
 
+### Verification commands (agent / terminal — no Partners UI)
+
+Run from repo root. Replace `PORT` with the port printed by `salla theme preview` (e.g. `8006`).
+
+```bash
+# Path 1 — local preview assets (should be 200 while CLI is running)
+curl -sI "http://localhost:PORT/app.css"
+
+# Path 1 — local bundle loads (CLI must be running)
+curl -sI "http://localhost:PORT/app.css" | head -1
+
+# Path 2 — OUR theme CDN (404 EXPECTED until theme installed on a store — not a preview bug)
+curl -sI "https://cdn.assets.salla.network/themes/1507984290/1.343.22/app.css"
+
+# What bare demostore / editor loads today (stock Raed on demo store)
+curl -sI "https://cdn.assets.salla.network/themes/1247874246/1.350.0/app.css"
+
+# GitHub push only — does NOT update Salla CDN
+curl -sI "https://raw.githubusercontent.com/Mrufaihi/theme-raed/master/public/app.css"
+```
+
+**How to read results:**
+
+| Result | Meaning |
+|--------|---------|
+| `localhost:PORT/app.css` → 200 | Pipe A (hybrid preview) OK — open CLI Preview URL with matching `assets_url` |
+| `cdn.../1507984290/*` → 404 | Normal before install — proceed with Partners private install (Path 2) |
+| `cdn.../1507984290/*` → 200 after install | Path 2 CDN live — hosted preview can load without localhost |
+| Install link URL → 404 in browser | Use checklist above (allowed list, approval, merchant login, Flow A vs B) |
+
 ---
 
 ## Why install link 404 vs preview request
@@ -131,3 +161,4 @@ Do in order:
 - [Theme store FAQs](https://help.salla.sa/en/article/theme-store-faqs/memexqc5l38884bnaj6lxl87)
 - [Theme version management](https://help.salla.sa/article/332527199)
 - Session handoff: [SALLA-THEME-RAED-CONNECT-CONCLUDE-2026-06-19.md](./SALLA-THEME-RAED-CONNECT-CONCLUDE-2026-06-19.md)
+- #120 reframe draft: [SALLA-CLI-120-REFRAME-COMMENT.md](./SALLA-CLI-120-REFRAME-COMMENT.md)

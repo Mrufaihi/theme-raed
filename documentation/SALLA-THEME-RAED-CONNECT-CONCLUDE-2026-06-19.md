@@ -224,8 +224,8 @@ salla theme preview --store="jawliner saudi"
 
 ## 9. Repo state at wrap-up
 
-- **Branch:** `master`, pushed through **`be3e9358`** (magenta header smoke test still in repo).
-- **Smoke test file:** [header.scss](../src/assets/styles/04-components/header.scss) — `#ff00ff` on `.main-nav-container .inner`.
+- **Branch:** `master`, pushed through **`be3e9358`** (magenta smoke test since reverted in header.scss).
+- **Smoke test:** reverted — Path 1 hybrid preview confirmed; see §11.
 - **Preview CLI:** failing at sync with **Tag 1.343.11**; localhost may start but hosted path blocked.
 - **Stash:** `stash@{0}: temp: preview connect` (master.twig + app.css) — not restored.
 
@@ -269,11 +269,7 @@ git push origin master        # GitHub only — CDN needs successful preview syn
 
 **User actions taken:** Partners → GitHub branch **`master`** → Save Changes → **Preview Theme** on Jawliner Saudi.
 
-**Escalation:** [Salla-CLI #120](https://github.com/SallaApp/Salla-CLI/issues/120) — CDN never builds for theme `1507984290`.
-
-### Do not revert smoke test yet
-
-Keep `#ff00ff` in [header.scss](../src/assets/styles/04-components/header.scss) until CDN `1507984290` returns **200** and hosted preview loads our theme ID.
+**#120 reframe:** [SALLA-CLI-120-REFRAME-COMMENT.md](./SALLA-CLI-120-REFRAME-COMMENT.md) — CDN 404 after preview alone is expected; close issue as wrong premise.
 
 ---
 
@@ -317,12 +313,63 @@ Hybrid editor URL with matching `assets_url` + `ws_port` shows magenta. Dev loop
 
 Full install checklist: **[JAWLINER-THEME-INSTALL-WITH-MERCHANT.md](./JAWLINER-THEME-INSTALL-WITH-MERCHANT.md)** — Partners private setup, send request, merchant accept, test without activate, go-live.
 
-### Agent still to do
+### Agent work completed (2026-06-19 plan)
 
-1. Reframe/close [Salla-CLI #120](https://github.com/SallaApp/Salla-CLI/issues/120)
-2. Revert `#ff00ff` after hosted install confirmed
-3. Tag cleanup `1.343.12`–`1.343.22` — only with explicit OK
+1. **#120 reframe** — draft ready: [SALLA-CLI-120-REFRAME-COMMENT.md](./SALLA-CLI-120-REFRAME-COMMENT.md) (paste on GitHub, then close)
+2. **Install-link 404 + curl checks** — synced to [JAWLINER-THEME-INSTALL-WITH-MERCHANT.md](./JAWLINER-THEME-INSTALL-WITH-MERCHANT.md) § verification commands
+3. **Smoke test reverted** — `#ff00ff` removed from [header.scss](../src/assets/styles/04-components/header.scss); Path 1 hybrid preview confirmed
+4. **Tag cleanup** — deferred; see §12 below (needs explicit user OK before delete)
 
 ---
 
-_Last updated: 2026-06-19 — Path 1 confirmed; install flow moved to JAWLINER-THEME-INSTALL-WITH-MERCHANT.md._
+## 12. Install-link 404 diagnosis + verification (agent reference)
+
+**Install link 404 (browser)** — Partners / merchant checklist in [JAWLINER-THEME-INSTALL-WITH-MERCHANT.md](./JAWLINER-THEME-INSTALL-WITH-MERCHANT.md):
+
+1. `jawlinerksa.com` missing from Allowed Installation
+2. Theme not approved for private install
+3. Merchant not logged into store dashboard when opening link
+4. Flow A (request) vs Flow B (install link) mixed up
+5. Private theme price not set
+
+**CDN 404 for `1507984290` (curl)** — **not** an install-link bug; expected until theme is **installed** on a store (Path 2). Do not file CLI issues for this after preview alone.
+
+```bash
+# Path 1 — local (CLI must be running; use printed PORT)
+curl -sI "http://localhost:8006/app.css"
+
+# Path 2 — our theme CDN (404 until install)
+curl -sI "https://cdn.assets.salla.network/themes/1507984290/1.343.22/app.css"
+
+# Stock theme on demo store today
+curl -sI "https://cdn.assets.salla.network/themes/1247874246/1.350.0/app.css"
+```
+
+---
+
+## 13. Junk git tags `1.343.12`–`1.343.22` (cleanup deferred)
+
+Hand-pushed tags on the same commit while debugging CLI tag errors. **Do not delete** without explicit user OK.
+
+When approved, run locally then on GitHub:
+
+```bash
+# List first
+git tag -l '1.343.1*'
+
+# Local delete (example — run full range only after user OK)
+for t in 1.343.12 1.343.13 1.343.14 1.343.15 1.343.16 1.343.17 1.343.18 1.343.19 1.343.20 1.343.21 1.343.22; do
+  git tag -d "$t"
+done
+
+# Remote delete (same explicit OK required)
+for t in 1.343.12 1.343.13 1.343.14 1.343.15 1.343.16 1.343.17 1.343.18 1.343.19 1.343.20 1.343.21 1.343.22; do
+  git push origin --delete "$t"
+done
+```
+
+Keep `1.343.0`–`1.343.7` unless Salla Partners shows a conflict.
+
+---
+
+_Last updated: 2026-06-19 — agent plan complete; Path 1 confirmed; Path 2 install in JAWLINER-THEME-INSTALL-WITH-MERCHANT.md._
